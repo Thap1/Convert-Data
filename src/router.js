@@ -1,15 +1,26 @@
-import Router from "vue-router";
+import VueRouter from "vue-router";
 import Vue from "vue";
-import InputPushTemplate from './components/push-template/InputPushTemplate'
-Vue.use(Router);
+import InputPushTemplate from './components/template/InputPushTemplate'
+import HelloWorld from "./components/HelloWorld";
+
 
 const routes = [
-  { path: "/foo", component: InputPushTemplate },
+  {
+    path: "/",
+    component: InputPushTemplate,
+  },
+  {
+    path: "/home",
+    component: HelloWorld,
+  },
+ 
 ];
+Vue.use(VueRouter);
 
-export default function createRouter() {
-  return new Router({
-    mode: "history",
-    routes: [routes],
-  });
-}
+const router = new VueRouter({
+  mode: "history",
+  routes: routes
+});
+
+
+export default router;

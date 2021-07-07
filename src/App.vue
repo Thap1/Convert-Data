@@ -1,22 +1,18 @@
 <template>
   <v-app>
-
-
-    <v-main>
-      <HelloWorld/>
-    </v-main>
+      <router-view></router-view>
   </v-app>
 </template>
 
 <script>
 // import HelloWorld from './components/HelloWorld';
-import InputPushTemplate from './components/push-template/InputPushTemplate';
+// import InputPushTemplate from "./components/template/InputPushTemplate";
 
 export default {
-  name: 'App',
+  name: "App",
 
   components: {
-    InputPushTemplate,
+    // InputPushTemplate,
   },
 
   data: () => ({
