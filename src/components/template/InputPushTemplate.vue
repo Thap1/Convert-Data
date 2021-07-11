@@ -1,21 +1,21 @@
 <template>
   <v-container>
-    <v-text-field v-model="scenario" label="Scenario"></v-text-field>
+    <div class="input-scenario"><v-text-field v-model="scenario" color="orange orange-darken-4" label="Scenario"></v-text-field></div>
     <div class="main-push">
       <v-row>
         <v-col cols="12" md="2">
-          <div class="">App push msg</div>
+          <h2>App push msg</h2>
         </v-col>
         <v-col cols="12" md="4">
           <v-textarea
-            color="orange orange-darken-4"
+            color=""
             label="Input App Push Msg Titile"
             v-model="pushTitle"
           ></v-textarea
         ></v-col>
         <v-col cols="12" md="6">
           <v-textarea
-            color="orange orange-darken-4"
+            color=""
             label="Input App Push Msg Content"
             v-model="pushContent"
           ></v-textarea
@@ -26,12 +26,12 @@
     <div class="main-sms">
       <v-row>
         <v-col cols="12" md="2">
-          <div class="">SMS Template</div>
+          <h2>SMS Template</h2>
         </v-col>
 
         <v-col cols="12" md="6">
           <v-textarea
-            color="orange orange-darken-4"
+            color=""
             label="Input App Push Msg Content"
             v-model="smsContent"
           ></v-textarea
@@ -41,19 +41,19 @@
     <div class="main-email">
       <v-row>
         <v-col cols="12" md="2">
-          <div class="">Email Content</div>
+          <h2>Email Content</h2>
         </v-col>
 
         <v-col cols="12" md="4">
           <v-textarea
-            color="orange orange-darken-4"
+            color=""
             label="Input App Push Msg Titile"
             v-model="emailTitle"
           ></v-textarea
         ></v-col>
         <v-col cols="12" md="">
           <v-textarea
-            color="orange orange-darken-4"
+            color=""
             label="Input App Push Msg Content"
             v-model="emailContent"
           ></v-textarea
@@ -160,47 +160,18 @@ export default {
           value: "name",
         },
       ],
-      desserts: [
-        {
-          name: "Frozen Yogurt",
-        },
-        {
-          name: "Ice cream sandwich",
-        },
-      ],
-      scenario:
-        "=Successful fund transfer/+------ scheduled fund transfer (to other bank via Instapay)",
-      pushTitle: "loan_product_name Payment_Successful",
-      pushContent:
-        "Thank you for your payment of currncy_code tx_amount to your loan_product_name ending loan_account_no, customer_first_name!",
-      smsContent: "wewewewe",
-      emailTitle: "sdsdsdsdsd",
-      emailContent: `"Hi customer_first_name,
-
-You have successfully closed your loan_product_name with account number ending account_no on close_time. You can always apply for a loan_product_name again on the app.
-
-Thank you for banking with us!
-CIMB Bank Philippines
-CIMB: Seize Life’s Moments
-www.cimbbank.com.ph
-
-
-Got questions?
-
-Speak with our Customer Care Team available from 6am to 10pm.
-Just dial #2462 on your phone! Local calls are toll-free for Globe, Smart and PLDT subscribers nationwide. 
-
-If you’re currently not in the Philippines, please call +632 8 924 2462 (924-CIMB).
-
-CIMB Bank Philippines Inc. is regulated by the Bangko Sentral ng Pilipinas."
-`,
+      scenario: "",
+      pushTitle: "",
+      pushContent: "",
+      smsContent: "",
+      emailTitle: "",
+      emailContent: "",
       dataQueryAssociate: [],
       dataQueryPush: [],
       dataQueryEmail: [],
       dataQuerySms: [],
       dataQueryPaddingTemplate: [],
       dataParamPush: [],
-      // dataPadingTemplate: [],
     };
   },
   methods: {
@@ -310,7 +281,7 @@ CIMB Bank Philippines Inc. is regulated by the Bangko Sentral ng Pilipinas."
       for (let i = 0; i < pushParam.length; i++) {
         const element = pushParam[i];
         let query = [
-          `INSERT INTO template_data_padding(ID, EVENT, TEST_TEMPLATE_ID, PRD_TEMPLATE_ID, PADDING_ORDER, SOURCE_KEY, TAGET_KEY, CREATE_DATE, UPDATE_DATE, CREATE_BY, UPDATE_BY) VALUES ('push_${id}_${element}', '${element}', 'pus_${element}', 'push_${element}', ${i +
+          `INSERT INTO template_data_padding(ID, EVENT, TEST_TEMPLATE_ID, PRD_TEMPLATE_ID, PADDING_ORDER, SOURCE_KEY, TAGET_KEY, CREATE_DATE, UPDATE_DATE, CREATE_BY, UPDATE_BY) VALUES ('push_${id}_${element}', '${id}', 'push_${id}', 'push_${id}', ${i +
             1}, '${element}', '${element}', NULL, NULL, NULL, NULL);`,
         ];
         queryData.push(query);
@@ -322,7 +293,7 @@ CIMB Bank Philippines Inc. is regulated by the Bangko Sentral ng Pilipinas."
       for (let i = 0; i < smsParam.length; i++) {
         const element = smsParam[i];
         let query = [
-          `INSERT INTO template_data_padding(ID, EVENT, TEST_TEMPLATE_ID, PRD_TEMPLATE_ID, PADDING_ORDER, SOURCE_KEY, TAGET_KEY, CREATE_DATE, UPDATE_DATE, CREATE_BY, UPDATE_BY) VALUES ('sms_${id}', '${element}', 'sms_${element}', 'sms_${element}', ${i +
+          `INSERT INTO template_data_padding(ID, EVENT, TEST_TEMPLATE_ID, PRD_TEMPLATE_ID, PADDING_ORDER, SOURCE_KEY, TAGET_KEY, CREATE_DATE, UPDATE_DATE, CREATE_BY, UPDATE_BY) VALUES ('sms_${id}_${element}', '${id}', 'sms_${id}', 'sms_${id}', ${i +
             1}, '${element}', '${element}', NULL, NULL, NULL, NULL);`,
         ];
         queryData.push(query);
@@ -334,7 +305,7 @@ CIMB Bank Philippines Inc. is regulated by the Bangko Sentral ng Pilipinas."
       for (let i = 0; i < emailParam.length; i++) {
         const element = emailParam[i];
         let query = [
-          `INSERT INTO template_data_padding(ID, EVENT, TEST_TEMPLATE_ID, PRD_TEMPLATE_ID, PADDING_ORDER, SOURCE_KEY, TAGET_KEY, CREATE_DATE, UPDATE_DATE, CREATE_BY, UPDATE_BY) VALUES ('email_${id}', '${element}', 'email_${element}', 'email_${element}', ${i +
+          `INSERT INTO template_data_padding(ID, EVENT, TEST_TEMPLATE_ID, PRD_TEMPLATE_ID, PADDING_ORDER, SOURCE_KEY, TAGET_KEY, CREATE_DATE, UPDATE_DATE, CREATE_BY, UPDATE_BY) VALUES ('email_${id}_${element}', '${id}', 'email_${id}', 'email_${id}', ${i +
             1}, '${element}', '${element}', NULL, NULL, NULL, NULL);`,
         ];
         queryData.push(query);
@@ -412,15 +383,18 @@ CIMB Bank Philippines Inc. is regulated by the Bangko Sentral ng Pilipinas."
 </script>
 <style scoped>
 .main-push {
-  height: 300px;
+  height: 200px;
   background-color: burlywood;
 }
 .main-sms {
-  height: 300px;
+  height: 200px;
   background-color: bisque;
 }
 .main-email {
-  height: 300px;
+  height: 200px;
   background-color: darkgray;
+}
+.input-scenario{
+  background-color: #00bcd4;
 }
 </style>
