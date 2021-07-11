@@ -29,13 +29,6 @@
           <div class="">SMS Template</div>
         </v-col>
 
-        <v-col cols="12" md="4">
-          <v-textarea
-            color="orange orange-darken-4"
-            label="Input App Push Msg Titile"
-            v-model="smsTitle"
-          ></v-textarea
-        ></v-col>
         <v-col cols="12" md="6">
           <v-textarea
             color="orange orange-darken-4"
@@ -62,66 +55,228 @@
           <v-textarea
             color="orange orange-darken-4"
             label="Input App Push Msg Content"
-            v-model="emailContnet"
+            v-model="emailContent"
           ></v-textarea
         ></v-col>
       </v-row>
     </div>
-    <v-btn style="float:right" color="primary" @click="clickConvert"
-      >Click Convert Query</v-btn
-    >
-    <div class="">
-      <v-textarea solo label="Query Data" v-model="dataQuery"></v-textarea>
+    <div style="display: flow-root;">
+      <v-btn style="float:right" color="primary" @click="clickConvert"
+        >Click Convert Query</v-btn
+      >
     </div>
+    <v-card>
+      <v-tabs v-model="tab">
+        <v-tabs-slider></v-tabs-slider>
+
+        <v-tab href="#eventAssociate">
+          Event Associate
+        </v-tab>
+        <v-tab href="#pushTemplate">
+          Push Template
+        </v-tab>
+        <v-tab href="#smsTemplate">
+          Sms Template
+        </v-tab>
+        <v-tab href="#emailTemplate">
+          Email Template
+        </v-tab>
+        <v-tab href="#templatePadding">
+          Template Padding
+        </v-tab>
+      </v-tabs>
+
+      <v-tabs-items v-model="tab">
+        <v-tab-item :key="1" value="eventAssociate">
+          <v-card flat>
+            <v-card-text>
+              <v-data-table
+                :headers="headers"
+                :items="dataQueryAssociate"
+                class="elevation-1"
+              ></v-data-table>
+            </v-card-text>
+          </v-card>
+        </v-tab-item>
+        <v-tab-item :key="2" value="pushTemplate">
+          <v-card flat>
+            <v-card-text>
+              <v-data-table
+                :headers="headers"
+                :items="dataQueryPush"
+                class="elevation-1"
+              ></v-data-table>
+            </v-card-text>
+          </v-card>
+        </v-tab-item>
+        <v-tab-item :key="3" value="smsTemplate">
+          <v-card flat>
+            <v-card-text>
+              <v-data-table
+                :headers="headers"
+                :items="dataQuerySms"
+                class="elevation-1"
+              ></v-data-table>
+            </v-card-text>
+          </v-card>
+        </v-tab-item>
+        <v-tab-item :key="4" value="emailTemplate">
+          <v-card flat>
+            <v-card-text>
+              <v-data-table
+                :headers="headers"
+                :items="dataQueryEmail"
+                class="elevation-1"
+              ></v-data-table>
+            </v-card-text>
+          </v-card>
+        </v-tab-item>
+        <v-tab-item :key="5" value="templatePadding">
+          <v-card flat>
+            <v-card-text>
+              <v-data-table
+                :headers="headers"
+                :items="dataQueryPaddingTemplate"
+                class="elevation-1"
+              ></v-data-table>
+            </v-card-text>
+          </v-card>
+        </v-tab-item>
+      </v-tabs-items>
+    </v-card>
   </v-container>
 </template>
 
 <script>
 export default {
   name: "InputPushTemplate",
+
   data() {
     return {
+      tab: null,
+      headers: [
+        {
+          text: "Query SQL",
+          value: "name",
+        },
+      ],
+      desserts: [
+        {
+          name: "Frozen Yogurt",
+        },
+        {
+          name: "Ice cream sandwich",
+        },
+      ],
       scenario:
         "=Successful fund transfer/+------ scheduled fund transfer (to other bank via Instapay)",
-      pushTitle: "loan_product_name Payment Successful",
+      pushTitle: "loan_product_name Payment_Successful",
       pushContent:
         "Thank you for your payment of currncy_code tx_amount to your loan_product_name ending loan_account_no, customer_first_name!",
-      smsTitle: "",
-      smsContent: "",
-      emailTitle: "",
-      emailContnet: "",
-      dataQuery: "",
+      smsContent: "wewewewe",
+      emailTitle: "sdsdsdsdsd",
+      emailContent: `"Hi customer_first_name,
+
+You have successfully closed your loan_product_name with account number ending account_no on close_time. You can always apply for a loan_product_name again on the app.
+
+Thank you for banking with us!
+CIMB Bank Philippines
+CIMB: Seize Life’s Moments
+www.cimbbank.com.ph
+
+
+Got questions?
+
+Speak with our Customer Care Team available from 6am to 10pm.
+Just dial #2462 on your phone! Local calls are toll-free for Globe, Smart and PLDT subscribers nationwide. 
+
+If you’re currently not in the Philippines, please call +632 8 924 2462 (924-CIMB).
+
+CIMB Bank Philippines Inc. is regulated by the Bangko Sentral ng Pilipinas."
+`,
+      dataQueryAssociate: [],
+      dataQueryPush: [],
+      dataQueryEmail: [],
+      dataQuerySms: [],
+      dataQueryPaddingTemplate: [],
       dataParamPush: [],
+      // dataPadingTemplate: [],
     };
   },
   methods: {
     clickConvert() {
-      console.log("myArray::::", this.getParameter(this.pushContent));
-      console.log("myArray::::", this.replacePushContent(this.pushContent));
-
-      // console.log("myArray::::", this.replaceScenarioId(this.scenario));
-      // this.dataParamPush = this.getParameter(this.pushContent);
-      // console.log("this.dataParamPush:::", this.dataParamPush);
-
       let getId = this.replaceScenarioId(this.scenario);
-
       // GET QUERY SQL EVENTASSOSIATE
       this.dataParamPush = this.mapEventAssociate(getId);
+      this.dataQueryAssociate = this.convertArrayToObj(this.dataParamPush);
 
       // GET QUERY SQL PUSH TEMPLATE
-      // let getContentPush = this.replacePushContent(this.pushContent);
-      // let getParamPush = this.getParameter(this.pushContent);
-      // this.dataParamPush = this.mapPushTemplate(
-      //   getId,
-      //   this.pushTitle,
-      //   getContentPush
-      // );
+      let getContentPush = this.replaceContent(this.pushContent);
+      let getTitlePush = this.replaceContent(this.pushTitle);
+      this.dataParamPush = this.mapPushTemplate(
+        getId,
+        getTitlePush,
+        getContentPush
+      );
+      this.dataQueryPush = this.convertArrayToObj(this.dataParamPush);
+
+      // GET QUERY SQL SMS TEMPLATE
+      let getContentSms = this.replaceContent(this.smsContent);
+      this.dataParamPush = this.mapSmsTemplate(getId, getContentSms);
+      this.dataQuerySms = this.convertArrayToObj(this.dataParamPush);
+
+      // GET QUERY SQL EMAIL TEMPLATE
+      let getContentEmail = this.replaceContentEmail(this.emailContent);
+      let getTitleEmail = this.replaceContent(this.emailTitle);
+      this.dataParamPush = this.mapEmailTemplate(
+        getId,
+        getTitleEmail,
+        getContentEmail
+      );
+      this.dataQueryEmail = this.convertArrayToObj(this.dataParamPush);
 
       // GET QUERY SQL PUSH PADDING
-      // let getParamPush = this.getParameter(this.pushContent);
-      // this.dataParamPush = this.mapPushPadding(getId, getParamPush);
+      let getALLParamPush = [];
+      let getParamPushContent = this.getParameter(this.pushContent);
+      let getParamPushTile = this.getParameter(this.pushTitle);
 
-      this.dataQuery = this.dataParamPush;
+      getALLParamPush = [...getParamPushContent, ...getParamPushTile];
+      getALLParamPush = this.removeLoopParam(getALLParamPush);
+      let dataParamPushApp = this.mapPushPadding(getId, getALLParamPush);
+
+      // GET QUERY SQL SMS PADDING
+      let getALLParamSms = this.getParameter(this.smsContent);
+      getALLParamSms = this.removeLoopParam(getALLParamSms);
+      let dataParamSms = this.mapSmsPadding(getId, getALLParamSms);
+
+      // GET QUERY SQL EMAIL PADDING
+      let getALLParamEmail = [];
+      let getParamEmailContent = this.getParameter(this.emailContent);
+      let getParamEmailTile = this.getParameter(this.emailTitle);
+
+      getALLParamEmail = [...getParamEmailContent, ...getParamEmailTile];
+      getALLParamEmail = this.removeLoopParam(getALLParamEmail);
+      let dataParamEmail = this.mapEmailPadding(getId, getALLParamEmail);
+
+      let dataQueryAllPaddingTemplate = [
+        ...dataParamPushApp,
+        ...dataParamSms,
+        ...dataParamEmail,
+      ];
+
+      this.dataQueryPaddingTemplate = this.convertArrayToObj(
+        dataQueryAllPaddingTemplate
+      );
+    },
+
+    convertArrayToObj(array) {
+      let convert = [];
+      for (let i = 0; i < array.length; i++) {
+        const element = array[i];
+        let data = { name: element };
+        convert.push(data);
+      }
+      return convert;
     },
 
     mapEventAssociate(param) {
@@ -138,15 +293,15 @@ export default {
       ];
       return querySQL;
     },
-    mapSmsTemplate(id, pushTitle, pushContent) {
+    mapSmsTemplate(id, smsContent) {
       let querySQL = [
-        `INSERT INTO push_notification_template(TEMPLATE_ID, SUBJECT, CONTENT, STATE, CREATE_DATE, UPDATE_DATE, CREATE_BY, UPDATE_BY) VALUES ('sms_${id}', '${pushTitle}', '${pushContent}', '2', '2021-04-22 17:41:33', '2021-04-22 17:41:33', 'ex-nguyenvinhnam', 'ex-nguyenvinhnam');`,
+        `INSERT INTO sms_template(TEMPLATE_ID, CONTENT, STATE, CREATE_DATE, UPDATE_DATE, CREATE_BY, UPDATE_BY) VALUES ('sms_${id}', '${smsContent}', '2', now(), NULL, 'ex-hoangxuanthap001', NULL);`,
       ];
       return querySQL;
     },
-    mapEmailTemplate(id, pushTitle, pushContent) {
+    mapEmailTemplate(id, emailTitle, emailContent) {
       let querySQL = [
-        `INSERT INTO email_template(TEMPLATE_ID, SUBJECT, CONTENT, STATE, CREATE_DATE, UPDATE_DATE, CREATE_BY, UPDATE_BY) VALUES ('email_${id}', '${pushTitle}', '${pushContent}', '2', '2021-04-22 17:41:33', '2021-04-22 17:41:33', 'ex-nguyenvinhnam', 'ex-nguyenvinhnam');`,
+        `INSERT INTO email_template(TEMPLATE_ID, SUBJECT, CONTENT, STATE, CREATE_DATE, UPDATE_DATE, CREATE_BY, UPDATE_BY, UPDATE_TIME, CREATE_TIME) VALUES ('email_${id}', '${emailTitle}', '<p>${emailContent}</p>', '2', '2021-02-22 17:41:33', NULL, 'MANUAL', NULL, NULL, NULL);`,
       ];
       return querySQL;
     },
@@ -155,29 +310,32 @@ export default {
       for (let i = 0; i < pushParam.length; i++) {
         const element = pushParam[i];
         let query = [
-          `INSERT INTO template_data_padding(ID, EVENT, TEST_TEMPLATE_ID, PRD_TEMPLATE_ID, PADDING_ORDER, SOURCE_KEY, TAGET_KEY, CREATE_DATE, UPDATE_DATE, CREATE_BY, UPDATE_BY) VALUES ('push_${id}', '${element}', 'pus_${element}', 'push_${element}', ${i+1}, '${element}', '${element}', NULL, NULL, NULL, NULL);`,
+          `INSERT INTO template_data_padding(ID, EVENT, TEST_TEMPLATE_ID, PRD_TEMPLATE_ID, PADDING_ORDER, SOURCE_KEY, TAGET_KEY, CREATE_DATE, UPDATE_DATE, CREATE_BY, UPDATE_BY) VALUES ('push_${id}_${element}', '${element}', 'pus_${element}', 'push_${element}', ${i +
+            1}, '${element}', '${element}', NULL, NULL, NULL, NULL);`,
         ];
         queryData.push(query);
       }
       return queryData;
     },
-    mapSmsPadding(id, pushParam) {
+    mapSmsPadding(id, smsParam) {
       let queryData = [];
-      for (let i = 0; i < pushParam.length; i++) {
-        const element = pushParam[i];
+      for (let i = 0; i < smsParam.length; i++) {
+        const element = smsParam[i];
         let query = [
-          `INSERT INTO template_data_padding(ID, EVENT, TEST_TEMPLATE_ID, PRD_TEMPLATE_ID, PADDING_ORDER, SOURCE_KEY, TAGET_KEY, CREATE_DATE, UPDATE_DATE, CREATE_BY, UPDATE_BY) VALUES ('sms_${id}', '${element}', 'sms_${element}', 'sms_${element}', ${i+1}, '${element}', '${element}', NULL, NULL, NULL, NULL);`,
+          `INSERT INTO template_data_padding(ID, EVENT, TEST_TEMPLATE_ID, PRD_TEMPLATE_ID, PADDING_ORDER, SOURCE_KEY, TAGET_KEY, CREATE_DATE, UPDATE_DATE, CREATE_BY, UPDATE_BY) VALUES ('sms_${id}', '${element}', 'sms_${element}', 'sms_${element}', ${i +
+            1}, '${element}', '${element}', NULL, NULL, NULL, NULL);`,
         ];
         queryData.push(query);
       }
       return queryData;
     },
-    mapEmailPadding(id, pushParam) {
+    mapEmailPadding(id, emailParam) {
       let queryData = [];
-      for (let i = 0; i < pushParam.length; i++) {
-        const element = pushParam[i];
+      for (let i = 0; i < emailParam.length; i++) {
+        const element = emailParam[i];
         let query = [
-          `INSERT INTO template_data_padding(ID, EVENT, TEST_TEMPLATE_ID, PRD_TEMPLATE_ID, PADDING_ORDER, SOURCE_KEY, TAGET_KEY, CREATE_DATE, UPDATE_DATE, CREATE_BY, UPDATE_BY) VALUES ('email_${id}', '${element}', 'email_${element}', 'email_${element}', ${i}, '${element}', '${element}', NULL, NULL, NULL, NULL);`,
+          `INSERT INTO template_data_padding(ID, EVENT, TEST_TEMPLATE_ID, PRD_TEMPLATE_ID, PADDING_ORDER, SOURCE_KEY, TAGET_KEY, CREATE_DATE, UPDATE_DATE, CREATE_BY, UPDATE_BY) VALUES ('email_${id}', '${element}', 'email_${element}', 'email_${element}', ${i +
+            1}, '${element}', '${element}', NULL, NULL, NULL, NULL);`,
         ];
         queryData.push(query);
       }
@@ -185,14 +343,33 @@ export default {
     },
 
     getParameter(param) {
+      let pramLower = param.toLowerCase();
       let regexParam = /S*[A-Za-z_]\S*[_]\S*\b/g;
-      let getParam = param.match(regexParam);
-      let uniq = [...new Set(getParam)];
+      let getParam = pramLower.match(regexParam);
+      if (getParam) {
+        return getParam;
+      } else return "";
+    },
+    removeLoopParam(param) {
+      let uniq = [...new Set(param)];
       return uniq;
     },
-    replacePushContent(param) {
+    replaceContent(param) {
       let getParam = /S*[A-Za-z_]\S*[_]\S*\b/g;
-      return param.replace(getParam, "#{$&}");
+      let paramLowerCase = param.replace(getParam, function(v) {
+        return v.toLowerCase();
+      });
+      return paramLowerCase.replace(getParam, "#{$&}");
+    },
+    replaceContentEmail(param) {
+      let getParam = /S*[A-Za-z_]\S*[_]\S*\b/g;
+      let regexEnter = /\n/g;
+      let paramLowerCase = param.replace(getParam, function(v) {
+        return v.toLowerCase();
+      });
+      let regexParam = paramLowerCase.replace(getParam, "#{$&}");
+      let regexEnterAndParam = regexParam.replace(regexEnter, "<br>");
+      return regexEnterAndParam;
     },
     replaceScenarioId(param) {
       let regexUnderco = /\s*[^0-9a-zA-Z]/g;
