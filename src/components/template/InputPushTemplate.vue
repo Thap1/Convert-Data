@@ -1,6 +1,12 @@
 <template>
   <v-container>
-    <div class="input-scenario"><v-text-field v-model="scenario" color="orange orange-darken-4" label="Scenario"></v-text-field></div>
+    <div class="input-scenario">
+      <v-text-field
+        v-model="scenario"
+        color="orange orange-darken-4"
+        label="Scenario"
+      ></v-text-field>
+    </div>
     <div class="main-push">
       <v-row>
         <v-col cols="12" md="2">
@@ -60,11 +66,18 @@
         ></v-col>
       </v-row>
     </div>
-    <div style="display: flow-root;">
+    <div style="display: flow-root;height: 50px;">
       <v-btn style="float:right" color="primary" @click="clickConvert"
         >Click Convert Query</v-btn
       >
+      <v-btn
+        style="float:right; margin-right:15px "
+        color="#e0e0e0"
+        @click="cleanData"
+        >Clean Data</v-btn
+      >
     </div>
+    <div style="display: flow-root;"></div>
     <v-card>
       <v-tabs v-model="tab">
         <v-tabs-slider></v-tabs-slider>
@@ -160,9 +173,12 @@ export default {
           value: "name",
         },
       ],
-      scenario: "",
-      pushTitle: "",
-      pushContent: "",
+      scenario:
+        "Successful fund transfer/ scheduled fund transfer (to other bank via <transfer channel> but RETURNED by recipient bank) ",
+      pushTitle:
+        "Your is____Scheduled CIMB transfer to_another bank was returned",
+      pushContent:
+        "Hi customer_first_name. Your CIMB transfer to another____bank was returned by the____Beneficiary Bank. Kindly expect funds to be credited your account the following day.",
       smsContent: "",
       emailTitle: "",
       emailContent: "",
@@ -175,6 +191,20 @@ export default {
     };
   },
   methods: {
+    cleanData() {
+      this.scenario = "";
+      this.pushTitle = "";
+      this.pushContent = "";
+      this.smsContent = "";
+      this.emailTitle = "";
+      this.emailContent = "";
+      this.dataQueryAssociate = [];
+      this.dataQueryPush = [];
+      this.dataQueryEmail = [];
+      this.dataQuerySms = [];
+      this.dataQueryPaddingTemplate = [];
+      this.dataParamPush = [];
+    },
     clickConvert() {
       let getId = this.replaceScenarioId(this.scenario);
       // GET QUERY SQL EVENTASSOSIATE
@@ -213,12 +243,18 @@ export default {
 
       getALLParamPush = [...getParamPushContent, ...getParamPushTile];
       getALLParamPush = this.removeLoopParam(getALLParamPush);
-      let dataParamPushApp = this.mapPushPadding(getId, getALLParamPush);
+      const replaceALLParamPush = getALLParamPush.map((param) => {
+        return this.replaceScenarioId(param);
+      });
+      let dataParamPushApp = this.mapPushPadding(getId, replaceALLParamPush);
 
       // GET QUERY SQL SMS PADDING
       let getALLParamSms = this.getParameter(this.smsContent);
       getALLParamSms = this.removeLoopParam(getALLParamSms);
-      let dataParamSms = this.mapSmsPadding(getId, getALLParamSms);
+      const replaceALLParamSms = getALLParamSms.map((param) => {
+        return this.replaceScenarioId(param);
+      });
+      let dataParamSms = this.mapSmsPadding(getId, replaceALLParamSms);
 
       // GET QUERY SQL EMAIL PADDING
       let getALLParamEmail = [];
@@ -227,7 +263,10 @@ export default {
 
       getALLParamEmail = [...getParamEmailContent, ...getParamEmailTile];
       getALLParamEmail = this.removeLoopParam(getALLParamEmail);
-      let dataParamEmail = this.mapEmailPadding(getId, getALLParamEmail);
+      const replaceALLParamEmail = getALLParamEmail.map((param) => {
+        return this.replaceScenarioId(param);
+      });
+      let dataParamEmail = this.mapEmailPadding(getId, replaceALLParamEmail);
 
       let dataQueryAllPaddingTemplate = [
         ...dataParamPushApp,
@@ -328,6 +367,9 @@ export default {
     replaceContent(param) {
       let getParam = /S*[A-Za-z_]\S*[_]\S*\b/g;
       let paramLowerCase = param.replace(getParam, function(v) {
+        console.log("v:::", v);
+        // const replaceParam = this.replaceScenarioId(v)
+        // console.log("replaceParam:::", this.replaceScenarioId(v));
         return v.toLowerCase();
       });
       return paramLowerCase.replace(getParam, "#{$&}");
@@ -394,7 +436,7 @@ export default {
   height: 200px;
   background-color: darkgray;
 }
-.input-scenario{
+.input-scenario {
   background-color: #00bcd4;
 }
 </style>
