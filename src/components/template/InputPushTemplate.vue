@@ -354,7 +354,7 @@ export default {
 
     getParameter(param) {
       let pramLower = param.toLowerCase();
-      let regexParam = /S*[A-Za-z_]\S*[_]\S*\b/g;
+      let regexParam = /[[A-Za-z0-9_]+[_]+[A-Za-z0-9]+]*\b/g;
       let getParam = pramLower.match(regexParam);
       if (getParam) {
         return getParam;
@@ -365,17 +365,18 @@ export default {
       return uniq;
     },
     replaceContent(param) {
-      let getParam = /S*[A-Za-z_]\S*[_]\S*\b/g;
-      let paramLowerCase = param.replace(getParam, function(v) {
-        console.log("v:::", v);
-        // const replaceParam = this.replaceScenarioId(v)
-        // console.log("replaceParam:::", this.replaceScenarioId(v));
-        return v.toLowerCase();
+      let getParam = /[[A-Za-z0-9_]+[_]+[A-Za-z0-9]+]*\b/g;
+      let paramLowerCase = param.replace(getParam, (element) =>
+        element.toLowerCase()
+      
+      );
+      let paramReplace = paramLowerCase.replace(getParam, (element)=>{
+        return this.replaceScenarioId(element)
       });
-      return paramLowerCase.replace(getParam, "#{$&}");
+      return paramReplace.replace(getParam, "#{$&}");
     },
     replaceContentEmail(param) {
-      let getParam = /S*[A-Za-z_]\S*[_]\S*\b/g;
+      let getParam = /[[A-Za-z0-9_]+[_]+[A-Za-z0-9]+]*\b/g;
       let regexEnter = /\n/g;
       let paramLowerCase = param.replace(getParam, function(v) {
         return v.toLowerCase();
